@@ -400,15 +400,6 @@ def kakao_4(count, period_time, max_person,time_table) :
 
 #######################################################################################################################
 
-special_dict = {
-    '+': True,
-    '-' : True,
-    '*' : True,
-    '^' : True,
-    "/" : True,
-    "=" : True,
-    ' ':True
-}
 def check_special(value) :
     value_ord = ord(value)
     if (
@@ -416,11 +407,6 @@ def check_special(value) :
         ) : 
         return False
     return True
-    # get_result = special_dict.get(value)
-    # if get_result == None :
-    #     return False
-    # return get_result
-
 
 def make_jaccard(input_str):
     jaccard_list = list()
