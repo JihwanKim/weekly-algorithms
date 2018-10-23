@@ -219,7 +219,7 @@ def kakao_3(cache_size, cities):
 
 #######################################################################################################################
 r"""
-2018-10-22 23:10 ~ 01:36 중지
+2018-10-22 23:10 ~ 01:36
 4. 셔틀버스(난이도: 중)
 카카오에서는 무료 셔틀버스를 운행하기 때문에 판교역에서 편하게 사무실로 올 수 있다. 카카오의 직원은 서로를 ‘크루’라고 부르는데, 아침마다 많은 크루들이 이 셔틀을 이용하여 출근한다.
 
@@ -358,6 +358,7 @@ def kakao_4(count, period_time, max_person,time_table) :
 # print(kakao_4(count, period_time, max_person, time_table))
 
 #######################################################################################################################
+# 2018-10-23 20:42 ~ 21:34
 # 5. 뉴스 클러스터링(난이도: 중)
 # 여러 언론사에서 쏟아지는 뉴스, 특히 속보성 뉴스를 보면 비슷비슷한 제목의 기사가 많아 정작 필요한 기사를 찾기가 어렵다. Daum 뉴스의 개발 업무를 맡게 된 신입사원 튜브는 사용자들이 편리하게 다양한 뉴스를 찾아볼 수 있도록 문제점을 개선하는 업무를 맡게 되었다.
 
@@ -377,7 +378,9 @@ def kakao_4(count, period_time, max_person,time_table) :
 
 # 예를 들어 집합 A = {1, 2, 3}, 집합 B = {2, 3, 4}라고 할 때, 교집합 A ∩ B = {2, 3}, 합집합 A ∪ B = {1, 2, 3, 4}이 되므로, 집합 A, B 사이의 자카드 유사도 J(A, B) = 2/4 = 0.5가 된다. 집합 A와 집합 B가 모두 공집합일 경우에는 나눗셈이 정의되지 않으니 따로 J(A, B) = 1로 정의한다.
 
-# 자카드 유사도는 원소의 중복을 허용하는 다중집합에 대해서 확장할 수 있다. 다중집합 A는 원소 "1"을 3개 가지고 있고, 다중집합 B는 원소 "1"을 5개 가지고 있다고 하자. 이 다중집합의 교집합 A ∩ B는 원소 "1"을 min(3, 5)인 3개, 합집합 A ∪ B는 원소 "1"을 max(3, 5)인 5개 가지게 된다. 다중집합 A = {1, 1, 2, 2, 3}, 다중집합 B = {1, 2, 2, 4, 5}라고 하면, 교집합 A ∩ B = {1, 2, 2}, 합집합 A ∪ B = {1, 1, 2, 2, 3, 4, 5}가 되므로, 자카드 유사도 J(A, B) = 3/7, 약 0.42가 된다.
+# 자카드 유사도는 원소의 중복을 허용하는 다중집합에 대해서 확장할 수 있다. 다중집합 A는 원소 "1"을 3개 가지고 있고, 다중집합 B는 원소 "1"을 5개 가지고 있다고 하자. 이 다중집합의 교집합 A ∩ B는 원소 "1"을 min(3, 5)인 3개, 합집합 A ∪ B는 원소 "1"을 max(3, 5)인 5개 가지게 된다. 
+# 
+# 다중집합 A = {1, 1, 2, 2, 3}, 다중집합 B = {1, 2, 2, 4, 5}라고 하면, 교집합 A ∩ B = {1, 2, 2}, 합집합 A ∪ B = {1, 1, 2, 2, 3, 4, 5}가 되므로, 자카드 유사도 J(A, B) = 3/7, 약 0.42가 된다.
 
 # 이를 이용하여 문자열 사이의 유사도를 계산하는데 이용할 수 있다. 문자열 "FRANCE"와 "FRENCH"가 주어졌을 때, 이를 두 글자씩 끊어서 다중집합을 만들 수 있다. 각각 {FR, RA, AN, NC, CE}, {FR, RE, EN, NC, CH}가 되며, 교집합은 {FR, NC}, 합집합은 {FR, RA, AN, NC, CE, RE, EN, CH}가 되므로, 두 문자열 사이의 자카드 유사도 J("FRANCE", "FRENCH") = 2/8 = 0.25가 된다.
 
@@ -396,6 +399,112 @@ def kakao_4(count, period_time, max_person,time_table) :
 # E=M*C^2	e=m*c^2	65536
 
 #######################################################################################################################
+
+special_dict = {
+    '+': True,
+    '-' : True,
+    '*' : True,
+    '^' : True,
+    "/" : True,
+    "=" : True,
+    ' ':True
+}
+def check_special(value) :
+    value_ord = ord(value)
+    if (
+            (value_ord >= ord('a') and value_ord <= ord('z')) 
+        ) : 
+        return False
+    return True
+    # get_result = special_dict.get(value)
+    # if get_result == None :
+    #     return False
+    # return get_result
+
+
+def make_jaccard(input_str):
+    jaccard_list = list()
+
+    before_value = input_str[0]
+    for current_value in input_str[1:] :
+        if (check_special(current_value) or check_special(before_value)) :
+            before_value = current_value
+            continue
+        jaccard_list.append((before_value + current_value))
+        before_value = current_value
+    return jaccard_list
+
+def get_intersection(jaccard_a, jaccard_b) :
+    intersection = list()
+    for current_a_element in jaccard_a :
+        for current_b_element in jaccard_b :
+            if current_a_element == current_b_element :
+                intersection.append(current_b_element)
+                break
+    return intersection
+
+def get_union(jaccard_a, jaccard_b) :
+    intersection = get_intersection(jaccard_a[:], jaccard_b[:])
+    intersection.sort()
+    union = list()
+    is_not_same  = True
+    
+    loop_intersection = intersection[:]
+    for current_element in jaccard_a :
+        if(current_element == []):
+            print("what? ")
+        for intersection_element in loop_intersection :
+            if current_element == intersection_element :
+                union.append(current_element)
+                is_not_same = False
+                break
+        if is_not_same :
+            union.append(current_element)
+        else : 
+            loop_intersection.remove(current_element)
+        is_not_same  = True
+            
+    is_not_same  = True
+    loop_intersection = intersection[:]
+    for current_element in jaccard_b :
+        for intersection_element in loop_intersection :
+            if current_element == intersection_element :
+                is_not_same = False
+                break
+        if is_not_same :
+            union.append(current_element)
+        else : 
+            loop_intersection.remove(current_element)
+        is_not_same  = True
+    return union
+
+def kakao_5(str_a, str_b) :
+    jaccard_a = make_jaccard(str_a.lower())
+    jaccard_a.sort()
+    jaccard_b = make_jaccard(str_b.lower())
+    jaccard_b.sort()
+    intersection = get_intersection(jaccard_a[:], jaccard_b[:]) 
+    union = get_union(jaccard_a[:], jaccard_b[:])
+    union.sort()
+    # print("len : ", len(jaccard_a),jaccard_a," / len2 : ",len(jaccard_b), jaccard_b)
+    # print("intersection : " , intersection , " / union : ", union)
+    if len(union) == 0:
+        return 1* 65536
+    return int((float(len(intersection)) / float(len(union))) * 65536)
+
+# str1 = "FRANCE"
+# str2 = "french"
+# print(kakao_5(str1,str2))
+# str1 = "handshake"
+# str2 = "shake hands"
+# print(kakao_5(str1,str2))
+# str1 = "aa1+aa2"
+# str2 = "AAAA12"
+# print(kakao_5(str1,str2))
+# str1 = "E=M*C^2"
+# str2 = "e=m*c^2"
+# print(kakao_5(str1,str2))
+
 r"""
 6. 프렌즈4블록(난이도: 상)
 블라인드 공채를 통과한 신입 사원 라이언은 신규 게임 개발 업무를 맡게 되었다. 이번에 출시할 게임 제목은 "프렌즈4블록".
