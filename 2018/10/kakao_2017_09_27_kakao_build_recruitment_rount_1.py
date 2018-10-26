@@ -559,7 +559,6 @@ def check_same(pos_y, pos_x, value_list, remove_list) :
         return remove_list
     
 def kakao_6(value_list):
-    value_list.reverse()
     for current_line_idx in range(len(value_list)):
         current_line = value_list[current_line_idx]
         current_line_list = list()
@@ -577,20 +576,18 @@ def kakao_6(value_list):
         #     print(current_line)
         removed_list = list()
         for current_line_idx in range(len(value_list)) :
-            current_line = value_list[current_line_idx] 
             before_col_element = ""
-            for current_col_idx in range(len(current_line)):
-                current_col_element = current_line[current_col_idx]
+            for current_col_idx in range(len(value_list[current_line_idx])):
+                current_col_element = value_list[current_line_idx][current_col_idx]
                 if ( current_col_element == before_col_element) :
                     removed_list.extend(check_same(current_line_idx, current_col_idx, value_list, removed_list))
                 else :
                     before_col_element = current_col_element
-            
-        for [pos_y,pos_x] in removed_list:
-            value_list[pos_y][pos_x] = " "
-            is_removed = True
 
-        if is_removed:
+        if len(removed_list) > 0:
+            is_removed = True
+            for [pos_y,pos_x] in removed_list:
+                value_list[pos_y][pos_x] = " "
             # 위에있는것들 아래로 눌러주기. (현 알고리즘에선 위로눌러주기)
             y_len = len(value_list)
             x_len = len(value_list[0])
@@ -619,10 +616,13 @@ def kakao_6(value_list):
     print("result", left_cnt)
     for current_line in value_list:
         print(current_line)
+    return left_cnt
 
 v = ["CCBDE", "AAADE", "AAABF", "CCBBF"]
+v.reverse()
 kakao_6(v)
 v = ["TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ"]
+v.reverse()
 kakao_6(v)
 r"""
 7. 추석 트래픽(난이도: 상)
