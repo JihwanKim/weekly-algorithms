@@ -6,6 +6,7 @@ import json
 client = discord.Client()
 
 pubg_key = ""
+token_id = ""
 
 def pubg_call(URI):
     headers = {"Authorization": "Bearer " + pubg_key, "Accept": "application/vnd.api+json"}
@@ -20,7 +21,7 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
-def get_game_type():
+def get_pubg_game_type():
     return ["solo","duo","squad"]
 
 def print_stats(stats, type):
@@ -56,12 +57,12 @@ async def on_message(message):
         response = pubg_call('https://api.pubg.com/shards/steam/players/'+id+'/seasons/division.bro.official.pc-2018-01' )
         stats = json.loads(response.text).get("data").get("attributes").get("gameModeStats")
         if stats:
-            game_types = get_game_type()
+            game_types = get_pubg_game_type()
             for current_game_type in game_types:
                 result = str(print_stats(stats, current_game_type)) 
                 if result != "None" : 
                     await client.send_message(message.channel, result)
             
 
-client.run('')
+client.run(token_id)
 
