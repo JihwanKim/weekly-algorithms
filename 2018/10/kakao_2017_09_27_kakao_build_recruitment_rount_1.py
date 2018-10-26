@@ -3,6 +3,7 @@
 # 3:01 ~ 4:45 -> 1,2,3 번문항 
 #
 
+import numpy as np
 
 #######################################################################################################################
 # 카카오 코딩테스트 공채 1번문항
@@ -538,6 +539,91 @@ m	n	board	answer
 입출력 예제 2는 본문 설명에 있는 그림을 옮긴 것이다. 11개와 4개의 블록이 차례로 지워지며, 모두 15개의 블록이 지워진다.
 """
 #######################################################################################################################
+def check_same(pos_y, pos_x, value_list, remove_list) : 
+    value = value_list[pos_y][pos_x]
+    if value == " " :
+        return remove_list
+    try:
+        if (value == value_list[pos_y][pos_x-1] and
+            value == value_list[pos_y+1][pos_x] and
+            value == value_list[pos_y+1][pos_x-1]):
+            
+            remove_list.append([pos_y,pos_x])
+            remove_list.append([pos_y+1,pos_x])
+            remove_list.append([pos_y,pos_x-1])
+            remove_list.append([pos_y+1,pos_x-1])
+            return remove_list
+        else :
+            return remove_list
+    except Exception:
+        return remove_list
+    
+def kakao_6(value_list):
+    value_list.reverse()
+    for current_line_idx in range(len(value_list)):
+        current_line = value_list[current_line_idx]
+        current_line_list = list()
+        for current_element in current_line:
+            current_line_list.append(current_element)
+        value_list[current_line_idx] = current_line_list
+
+    print("input")
+    for current_line in value_list:
+        print(current_line)
+    is_removed = True
+    while is_removed:
+        is_removed = False
+        # for current_line in value_list:
+        #     print(current_line)
+        removed_list = list()
+        for current_line_idx in range(len(value_list)) :
+            current_line = value_list[current_line_idx] 
+            before_col_element = ""
+            for current_col_idx in range(len(current_line)):
+                current_col_element = current_line[current_col_idx]
+                if ( current_col_element == before_col_element) :
+                    removed_list.extend(check_same(current_line_idx, current_col_idx, value_list, removed_list))
+                else :
+                    before_col_element = current_col_element
+            
+        for [pos_y,pos_x] in removed_list:
+            value_list[pos_y][pos_x] = " "
+            is_removed = True
+
+        if is_removed:
+            # 위에있는것들 아래로 눌러주기. (현 알고리즘에선 위로눌러주기)
+            y_len = len(value_list)
+            x_len = len(value_list[0])
+            for pos_x in range(x_len) :
+                for pos_y in range(y_len) :
+                    try:
+                        if value_list[pos_y][pos_x] == " ":
+                            moved_pos_y = pos_y+1
+                            while moved_pos_y < y_len:
+                                if value_list[moved_pos_y][pos_x] == " ":
+                                    moved_pos_y += 1
+                                    continue
+                                else : 
+                                    value_list[pos_y][pos_x] = value_list[moved_pos_y][pos_x]
+                                    value_list[moved_pos_y][pos_x] = " "
+                                    break
+                    except Exception :
+                        Exception
+                
+    left_cnt = 0
+    for row_line in value_list:
+        for value in row_line:
+            if value == " ":
+                left_cnt += 1
+    value_list.reverse()
+    print("result", left_cnt)
+    for current_line in value_list:
+        print(current_line)
+
+v = ["CCBDE", "AAADE", "AAABF", "CCBBF"]
+kakao_6(v)
+v = ["TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ"]
+kakao_6(v)
 r"""
 7. 추석 트래픽(난이도: 상)
 이번 추석에도 시스템 장애가 없는 명절을 보내고 싶은 어피치는 서버를 증설해야 할지 고민이다. 장애 대비용 서버 증설 여부를 결정하기 위해 작년 추석 기간인 9월 15일 로그 데이터를 분석한 후 초당 최대 처리량을 계산해보기로 했다. 초당 최대 처리량은 요청의 응답 완료 여부에 관계없이 임의 시간부터 1초(=1,000밀리초)간 처리하는 요청의 최대 개수를 의미한다.
