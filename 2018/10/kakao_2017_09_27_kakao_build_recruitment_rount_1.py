@@ -626,7 +626,9 @@ def kakao_6(value_list):
 # kakao_6(v)
 r"""
 7. 추석 트래픽(난이도: 상)
-이번 추석에도 시스템 장애가 없는 명절을 보내고 싶은 어피치는 서버를 증설해야 할지 고민이다. 장애 대비용 서버 증설 여부를 결정하기 위해 작년 추석 기간인 9월 15일 로그 데이터를 분석한 후 초당 최대 처리량을 계산해보기로 했다. 초당 최대 처리량은 요청의 응답 완료 여부에 관계없이 임의 시간부터 1초(=1,000밀리초)간 처리하는 요청의 최대 개수를 의미한다.
+이번 추석에도 시스템 장애가 없는 명절을 보내고 싶은 어피치는 서버를 증설해야 할지 고민이다.
+장애 대비용 서버 증설 여부를 결정하기 위해 작년 추석 기간인 9월 15일 로그 데이터를 분석한 후 초당 최대 처리량을 계산해보기로 했다. 
+초당 최대 처리량은 요청의 응답 완료 여부에 관계없이 임의 시간부터 1초(=1,000밀리초)간 처리하는 요청의 최대 개수를 의미한다.
 
 입력 형식
 solution 함수에 전달되는 lines 배열은 N(1 ≦ N ≦ 2,000)개의 로그 문자열로 되어 있으며, 각 로그 문자열마다 요청에 대한 응답완료시간 S와 처리시간 T가 공백으로 구분되어 있다.
@@ -650,3 +652,98 @@ solution 함수에서는 로그 데이터 lines 배열에 대해 초당 최대 �
 출력: 7
 설명: 아래 타임라인 그림에서 빨간색으로 표시된 1초 각 구간의 처리량을 구해보면 (1)은 4개, (2)는 7개, (3)는 2개임을 알 수 있다. 따라서 초당 최대 처리량은 7이 되며, 동일한 최대 처리량을 갖는 1초 구간은 여러 개 존재할 수 있으므로 이 문제에서는 구간이 아닌 개수만 출력한다.
 """
+# 1 차 작성 결과, 예제 2번에서 원하던 값이 나오질 않음.
+import math
+
+def time_add(time, duration):
+    year = int(time[0:4])
+    month = int(time[5:7])
+    date = int(time[8:10])
+    hour = int(time[11:13])
+    minutes = int(time[14:16])
+    second = float(time[17:23])
+
+    second += duration
+
+    return second + minutes * 60 + hour * 60*60 + date * 60*60*24 + month * 60*60*24*30 + (year-1971) * 60 * 60 * 24 * 365
+
+
+def time_to_start_and_end_time(time):
+    duration = float(time[24:-1])
+    return [(time_add(time, - duration + 0.001)), (time_add(time, 0))]
+
+    
+
+def kakao_7(time_list):
+    start_end_time_list = list()
+    for time in time_list:
+        start_end_time_list.append(time_to_start_and_end_time(time))
+    dicts = dict()
+    for a in start_end_time_list:
+        print(a)
+    for [start_time, end_time] in start_end_time_list:
+        for [other_start_time, other_end_time] in start_end_time_list : 
+
+            if (
+                (other_start_time <= start_time and start_time < other_end_time) or
+                (start_time <= other_start_time and other_end_time < start_time+1) or
+                (other_start_time < start_time+1  and start_time+1 < other_end_time)
+            ) :
+                #print("start_time" , start_time)
+                updated_value = 0
+                if dicts.get(start_time) == None:
+                    updated_value = 1
+                else : 
+                    updated_value = dicts.get(start_time) + 1
+                dicts[start_time] = updated_value
+                # if end_time - start_time < 1 :
+                #     continue
+                
+            if  (
+                 
+                    (
+                    (other_start_time <= end_time and end_time < other_end_time) or
+                    (end_time <= other_start_time and other_end_time < end_time+1) or
+                    (other_start_time < end_time+1  and end_time+1 < other_end_time)
+                )) :
+                updated_value = 0
+                if dicts.get(end_time) == None:
+                    updated_value = 1
+                else : 
+                    updated_value = dicts.get(end_time) + 1
+                dicts[end_time] = updated_value
+
+        # while start_time <= end_time:
+            
+            # updated_value = 0
+            # if dicts.get(start_time) == None:
+            #     updated_value = 1
+            # else : hitomi_downloaded
+            #     updated_value = dicts.get(start_time) + 1
+            # dicts[start_time] = updated_value
+            # start_time +=1 
+    dict_keys = dicts.keys()
+    maximun_value = 0
+    for current_key in dict_keys : 
+        if (dicts.get(current_key) > maximun_value ):
+            maximun_value = dicts.get(current_key)
+    print(maximun_value)
+    return dicts
+
+v = [ "2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s" ]
+print(kakao_7(v))
+v = [ "2016-09-15 01:00:04.002 2.0s", "2016-09-15 01:00:07.000 2s" ]
+print(kakao_7(v))
+v= [ 
+    "2016-09-15 20:59:57.421 0.351s", 
+    "2016-09-15 20:59:58.233 1.181s", 
+    "2016-09-15 20:59:58.299 0.8s", 
+    "2016-09-15 20:59:58.688 1.041s", 
+    "2016-09-15 20:59:59.591 1.412s", 
+    "2016-09-15 21:00:00.464 1.466s", 
+    "2016-09-15 21:00:00.741 1.581s", 
+    "2016-09-15 21:00:00.748 2.31s", 
+    "2016-09-15 21:00:00.966 0.381s", 
+    "2016-09-15 21:00:02.066 2.62s" 
+    ]
+print(kakao_7(v))
