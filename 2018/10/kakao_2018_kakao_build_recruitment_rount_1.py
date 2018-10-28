@@ -1,8 +1,9 @@
 # 코딩테스트
-#http://tech.kakao.com/2017/09/27/kakao-blind-recruitment-round-1/
-# 3:01 ~ 4:45 -> 1,2,3 번문항 
+# http://tech.kakao.com/2017/09/27/kakao-blind-recruitment-round-1/
+# 3:01 ~ 4:45 -> 1,2,3 번문항
 #
 
+import math
 import numpy as np
 
 #######################################################################################################################
@@ -40,10 +41,12 @@ arr1	[46, 33, 33 ,22, 31, 50]
 arr2	[27 ,56, 19, 14, 14, 10]
 출력	["######", "### #", "## ##", " #### ", " #####", "### # "]
 """
+
+
 def kakao_1(first, second):
     size = len(first)
     ls = list()
-    for value in range(size) : 
+    for value in range(size):
         ls.append(first[value] | second[value])
     resultV = list()
     for currentV in ls:
@@ -99,27 +102,28 @@ def is_number(var):
     except Exception:
         return False
 
+
 def kakao_2(value):
     intLs = list()
-    dic = {"S" : 1,"D" : 2,"T" : 3, "#" : (-1), "*" : 2}
+    dic = {"S": 1, "D": 2, "T": 3, "#": (-1), "*": 2}
     lastIsInt = False
     for currentV in value:
         if is_number(currentV):
             current = int(currentV)
-            if lastIsInt :
-                intLs[-1] = intLs[-1]*10 + current 
-            else : 
+            if lastIsInt:
+                intLs[-1] = intLs[-1]*10 + current
+            else:
                 intLs.append(current)
             lastIsInt = True
-        else : 
+        else:
             lastIsInt = False
             current = currentV
             opResult = dic.get(current)
-            if current == "S" or current == "D"  or current == "T":
-                intLs[-1] = pow(intLs[-1],opResult)
+            if current == "S" or current == "D" or current == "T":
+                intLs[-1] = pow(intLs[-1], opResult)
             elif current == "*":
                 intLs[-1] *= opResult
-                if len(intLs)>1:
+                if len(intLs) > 1:
                     intLs[-2] *= opResult
             elif current == "#":
                 intLs[-1] *= opResult
@@ -171,11 +175,11 @@ def kakao_2(value):
 # 2	["Jeju", "Pangyo", "NewYork", "newyork"]	16
 # 0	["Jeju", "Pangyo", "Seoul", "NewYork", "LA"]	25
 def cache(cache_size, cache_list, city):
-    if len(cache_list)  < cache_size :
+    if len(cache_list) < cache_size:
         cache_list.append(city)
         return 5
-    else : 
-        for current_cache_city_idx in range(cache_size) :
+    else:
+        for current_cache_city_idx in range(cache_size):
             current_cache_city = cache_list[current_cache_city_idx]
             if current_cache_city == city:
                 cache_list.remove(city)
@@ -193,15 +197,15 @@ def cache(cache_size, cache_list, city):
 def kakao_3(cache_size, cities):
     cache_ls = list()
     time = 0
-    for current_city in cities :
+    for current_city in cities:
         time += cache(cache_size, cache_ls, current_city.lower())
     print(cache_ls)
     print(time)
     return time
-# cache_size = 3 
+# cache_size = 3
 # v = ["Jeju", "Pangyo","Seoul", "NewYork","LA", "Jeju","Pangyo","Seoul","NewYork","LA"]
 # kakao_3(cache_size,v)
-# cache_size = 3 
+# cache_size = 3
 # v = ["Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul","Jeju", "Pangyo", "Seoul"]
 # kakao_3(cache_size,v)
 # cache_size = 2
@@ -252,78 +256,87 @@ n	t	m	timetable	answer
 1	1	1	["23:59"]	"09:00"
 10	60	45	["23:59","23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59"]	"18:00"
 """
+
+
 def check_better(con_time, current_person_time):
     con = time_to_stamp(con_time)
     person = time_to_stamp(current_person_time)
-    if (con <= person) :
+    if (con <= person):
         return True
     return False
 
+
 def time_to_stamp(time):
-    con_hour = int(time[:2]) 
-    con_min = int(time[3:]) 
+    con_hour = int(time[:2])
+    con_min = int(time[3:])
     return con_hour*60 + con_min
+
 
 def stamp_to_time(stamp):
     hour = 0
     minutes = 0
-    while stamp > 59 :
-        stamp-=60
-        hour+=1
+    while stamp > 59:
+        stamp -= 60
+        hour += 1
     hour %= 24
     minutes += stamp
     last_hour = str(hour)
     last_min = str(minutes)
-    return (last_hour if len(last_hour) > 1 else "0" + last_hour)  + ":" + (last_min if len(last_min) > 1 else "0" + last_min)
+    return (last_hour if len(last_hour) > 1 else "0" + last_hour) + ":" + (last_min if len(last_min) > 1 else "0" + last_min)
+
 
 def sort(time_list):
-    time_list = list(map(lambda current_time : time_to_stamp(current_time),time_list))
+    time_list = list(
+        map(lambda current_time: time_to_stamp(current_time), time_list))
     time_list.sort()
-    return list(map(lambda current_stamp : stamp_to_time(current_stamp), time_list))
-    
-def time_calc(time, value):
-    return stamp_to_time( time_to_stamp(time) + value)
+    return list(map(lambda current_stamp: stamp_to_time(current_stamp), time_list))
 
-def kakao_4(count, period_time, max_person,time_table) : 
+
+def time_calc(time, value):
+    return stamp_to_time(time_to_stamp(time) + value)
+
+
+def kakao_4(count, period_time, max_person, time_table):
     time_table = sort(time_table)
     first_start_time = "09:00"
     start_time_list = list()
     for current_cnt in range(count):
-        start_time_list.append(stamp_to_time( time_to_stamp(first_start_time) + period_time * current_cnt))
+        start_time_list.append(stamp_to_time(time_to_stamp(
+            first_start_time) + period_time * current_cnt))
 
     print("bus time : ", start_time_list)
-    for start_time in start_time_list :
+    for start_time in start_time_list:
         last_person_num = max_person
         sit_user_list = list()
-        for arrived_time_idx in range(len(time_table)) :
-            arrived_time = time_table[arrived_time_idx] 
-            if count == 1 and (last_person_num == 1 or arrived_time_idx == len(time_table)-1) : 
-                if( last_person_num == 1 and arrived_time_idx == len(time_table)-1) : 
-                    if(check_better(start_time,arrived_time)):
-                        if( start_time == arrived_time):
-                            return time_calc(arrived_time,-1)
+        for arrived_time_idx in range(len(time_table)):
+            arrived_time = time_table[arrived_time_idx]
+            if count == 1 and (last_person_num == 1 or arrived_time_idx == len(time_table)-1):
+                if(last_person_num == 1 and arrived_time_idx == len(time_table)-1):
+                    if(check_better(start_time, arrived_time)):
+                        if(start_time == arrived_time):
+                            return time_calc(arrived_time, -1)
                         return start_time
-                    return time_calc(arrived_time,-1)
+                    return time_calc(arrived_time, -1)
                 if arrived_time_idx == len(time_table)-1:
                     return start_time
                 if (last_person_num == 1):
-                    if check_better(time_table[arrived_time_idx+1], start_time) :
-                        return time_calc(time_table[arrived_time_idx+1],-1)
-                    return time_calc(arrived_time,-1)
-                
-            if check_better(arrived_time, start_time) :
-                last_person_num -=1
+                    if check_better(time_table[arrived_time_idx+1], start_time):
+                        return time_calc(time_table[arrived_time_idx+1], -1)
+                    return time_calc(arrived_time, -1)
+
+            if check_better(arrived_time, start_time):
+                last_person_num -= 1
                 sit_user_list.append(arrived_time)
-            else : 
+            else:
                 if(count == 1):
                     return start_time
                 break
             if last_person_num == 0:
-                for current_sit_user in sit_user_list :
+                for current_sit_user in sit_user_list:
                     time_table.remove(current_sit_user)
                 break
         count -= 1
-        if count == 0 :
+        if count == 0:
             return start_time
     return 0
 
@@ -379,8 +392,8 @@ def kakao_4(count, period_time, max_person,time_table) :
 
 # 예를 들어 집합 A = {1, 2, 3}, 집합 B = {2, 3, 4}라고 할 때, 교집합 A ∩ B = {2, 3}, 합집합 A ∪ B = {1, 2, 3, 4}이 되므로, 집합 A, B 사이의 자카드 유사도 J(A, B) = 2/4 = 0.5가 된다. 집합 A와 집합 B가 모두 공집합일 경우에는 나눗셈이 정의되지 않으니 따로 J(A, B) = 1로 정의한다.
 
-# 자카드 유사도는 원소의 중복을 허용하는 다중집합에 대해서 확장할 수 있다. 다중집합 A는 원소 "1"을 3개 가지고 있고, 다중집합 B는 원소 "1"을 5개 가지고 있다고 하자. 이 다중집합의 교집합 A ∩ B는 원소 "1"을 min(3, 5)인 3개, 합집합 A ∪ B는 원소 "1"을 max(3, 5)인 5개 가지게 된다. 
-# 
+# 자카드 유사도는 원소의 중복을 허용하는 다중집합에 대해서 확장할 수 있다. 다중집합 A는 원소 "1"을 3개 가지고 있고, 다중집합 B는 원소 "1"을 5개 가지고 있다고 하자. 이 다중집합의 교집합 A ∩ B는 원소 "1"을 min(3, 5)인 3개, 합집합 A ∪ B는 원소 "1"을 max(3, 5)인 5개 가지게 된다.
+#
 # 다중집합 A = {1, 1, 2, 2, 3}, 다중집합 B = {1, 2, 2, 4, 5}라고 하면, 교집합 A ∩ B = {1, 2, 2}, 합집합 A ∪ B = {1, 1, 2, 2, 3, 4, 5}가 되므로, 자카드 유사도 J(A, B) = 3/7, 약 0.42가 된다.
 
 # 이를 이용하여 문자열 사이의 유사도를 계산하는데 이용할 수 있다. 문자열 "FRANCE"와 "FRENCH"가 주어졌을 때, 이를 두 글자씩 끊어서 다중집합을 만들 수 있다. 각각 {FR, RA, AN, NC, CE}, {FR, RE, EN, NC, CH}가 되며, 교집합은 {FR, NC}, 합집합은 {FR, RA, AN, NC, CE, RE, EN, CH}가 되므로, 두 문자열 사이의 자카드 유사도 J("FRANCE", "FRENCH") = 2/8 = 0.25가 된다.
@@ -401,82 +414,87 @@ def kakao_4(count, period_time, max_person,time_table) :
 
 #######################################################################################################################
 
-def check_special(value) :
+
+def check_special(value):
     value_ord = ord(value)
     if (
-            (value_ord >= ord('a') and value_ord <= ord('z')) 
-        ) : 
+        (value_ord >= ord('a') and value_ord <= ord('z'))
+    ):
         return False
     return True
+
 
 def make_jaccard(input_str):
     jaccard_list = list()
 
     before_value = input_str[0]
-    for current_value in input_str[1:] :
-        if (check_special(current_value) or check_special(before_value)) :
+    for current_value in input_str[1:]:
+        if (check_special(current_value) or check_special(before_value)):
             before_value = current_value
             continue
         jaccard_list.append((before_value + current_value))
         before_value = current_value
     return jaccard_list
 
-def get_intersection(jaccard_a, jaccard_b) :
+
+def get_intersection(jaccard_a, jaccard_b):
     intersection = list()
-    for current_a_element in jaccard_a :
-        for current_b_element in jaccard_b :
-            if current_a_element == current_b_element :
+    for current_a_element in jaccard_a:
+        for current_b_element in jaccard_b:
+            if current_a_element == current_b_element:
                 intersection.append(current_b_element)
                 break
     return intersection
 
-def get_union(jaccard_a, jaccard_b) :
+
+def get_union(jaccard_a, jaccard_b):
     intersection = get_intersection(jaccard_a[:], jaccard_b[:])
     intersection.sort()
     union = list()
-    is_not_same  = True
-    
+    is_not_same = True
+
     loop_intersection = intersection[:]
-    for current_element in jaccard_a :
+    for current_element in jaccard_a:
         if(current_element == []):
             print("what? ")
-        for intersection_element in loop_intersection :
-            if current_element == intersection_element :
+        for intersection_element in loop_intersection:
+            if current_element == intersection_element:
                 union.append(current_element)
                 is_not_same = False
                 break
-        if is_not_same :
+        if is_not_same:
             union.append(current_element)
-        else : 
+        else:
             loop_intersection.remove(current_element)
-        is_not_same  = True
-            
-    is_not_same  = True
+        is_not_same = True
+
+    is_not_same = True
     loop_intersection = intersection[:]
-    for current_element in jaccard_b :
-        for intersection_element in loop_intersection :
-            if current_element == intersection_element :
+    for current_element in jaccard_b:
+        for intersection_element in loop_intersection:
+            if current_element == intersection_element:
                 is_not_same = False
                 break
-        if is_not_same :
+        if is_not_same:
             union.append(current_element)
-        else : 
+        else:
             loop_intersection.remove(current_element)
-        is_not_same  = True
+        is_not_same = True
     return union
 
-def kakao_5(str_a, str_b) :
+
+def kakao_5(str_a, str_b):
     jaccard_a = make_jaccard(str_a.lower())
     jaccard_a.sort()
     jaccard_b = make_jaccard(str_b.lower())
     jaccard_b.sort()
-    intersection = get_intersection(jaccard_a[:], jaccard_b[:]) 
+    intersection = get_intersection(jaccard_a[:], jaccard_b[:])
     union = get_union(jaccard_a[:], jaccard_b[:])
     union.sort()
     # print("len : ", len(jaccard_a),jaccard_a," / len2 : ",len(jaccard_b), jaccard_b)
     # print("intersection : " , intersection , " / union : ", union)
     if len(union) == 0:
-        return 1* 65536
+        return 1 * 65536
     return int((float(len(intersection)) / float(len(union))) * 65536)
 
 # str1 = "FRANCE"
@@ -491,6 +509,7 @@ def kakao_5(str_a, str_b) :
 # str1 = "E=M*C^2"
 # str2 = "e=m*c^2"
 # print(kakao_5(str1,str2))
+
 
 r"""
 6. 프렌즈4블록(난이도: 상)
@@ -539,25 +558,28 @@ m	n	board	answer
 입출력 예제 2는 본문 설명에 있는 그림을 옮긴 것이다. 11개와 4개의 블록이 차례로 지워지며, 모두 15개의 블록이 지워진다.
 """
 #######################################################################################################################
-def check_same(pos_y, pos_x, value_list, remove_list) : 
+
+
+def check_same(pos_y, pos_x, value_list, remove_list):
     value = value_list[pos_y][pos_x]
-    if value == " " :
+    if value == " ":
         return remove_list
     try:
         if (value == value_list[pos_y][pos_x-1] and
             value == value_list[pos_y+1][pos_x] and
-            value == value_list[pos_y+1][pos_x-1]):
-            
-            remove_list.append([pos_y,pos_x])
-            remove_list.append([pos_y+1,pos_x])
-            remove_list.append([pos_y,pos_x-1])
-            remove_list.append([pos_y+1,pos_x-1])
+                value == value_list[pos_y+1][pos_x-1]):
+
+            remove_list.append([pos_y, pos_x])
+            remove_list.append([pos_y+1, pos_x])
+            remove_list.append([pos_y, pos_x-1])
+            remove_list.append([pos_y+1, pos_x-1])
             return remove_list
-        else :
+        else:
             return remove_list
     except Exception:
         return remove_list
-    
+
+
 def kakao_6(value_list):
     for current_line_idx in range(len(value_list)):
         current_line = value_list[current_line_idx]
@@ -575,24 +597,25 @@ def kakao_6(value_list):
         # for current_line in value_list:
         #     print(current_line)
         removed_list = list()
-        for current_line_idx in range(len(value_list)) :
+        for current_line_idx in range(len(value_list)):
             before_col_element = ""
             for current_col_idx in range(len(value_list[current_line_idx])):
                 current_col_element = value_list[current_line_idx][current_col_idx]
-                if ( current_col_element == before_col_element) :
-                    removed_list.extend(check_same(current_line_idx, current_col_idx, value_list, removed_list))
-                else :
+                if (current_col_element == before_col_element):
+                    removed_list.extend(check_same(
+                        current_line_idx, current_col_idx, value_list, removed_list))
+                else:
                     before_col_element = current_col_element
 
         if len(removed_list) > 0:
             is_removed = True
-            for [pos_y,pos_x] in removed_list:
+            for [pos_y, pos_x] in removed_list:
                 value_list[pos_y][pos_x] = " "
             # 위에있는것들 아래로 눌러주기. (현 알고리즘에선 위로눌러주기)
             y_len = len(value_list)
             x_len = len(value_list[0])
-            for pos_x in range(x_len) :
-                for pos_y in range(y_len) :
+            for pos_x in range(x_len):
+                for pos_y in range(y_len):
                     try:
                         if value_list[pos_y][pos_x] == " ":
                             moved_pos_y = pos_y+1
@@ -600,13 +623,13 @@ def kakao_6(value_list):
                                 if value_list[moved_pos_y][pos_x] == " ":
                                     moved_pos_y += 1
                                     continue
-                                else : 
+                                else:
                                     value_list[pos_y][pos_x] = value_list[moved_pos_y][pos_x]
                                     value_list[moved_pos_y][pos_x] = " "
                                     break
-                    except Exception :
+                    except Exception:
                         Exception
-                
+
     left_cnt = 0
     for row_line in value_list:
         for value in row_line:
@@ -617,6 +640,7 @@ def kakao_6(value_list):
     for current_line in value_list:
         print(current_line)
     return left_cnt
+
 
 # v = ["CCBDE", "AAADE", "AAABF", "CCBBF"]
 # v.reverse()
@@ -654,7 +678,7 @@ solution 함수에서는 로그 데이터 lines 배열에 대해 초당 최대 �
 """
 # 대략적인 해결방법은 최초 문제 푼시점으로부터 2시간도 안되서 잡았으나, 해결은 못함
 # 1 차 작성 결과, 예제 2번에서 원하던 값이 나오질 않음.
-import math
+
 
 def time_add(time, duration):
     year = int(time[0:4])
@@ -673,7 +697,6 @@ def time_to_start_and_end_time(time):
     duration = float(time[24:-1])
     return [(time_add(time, - duration + 0.001)), (time_add(time, 0))]
 
-    
 
 def kakao_7(time_list):
     start_end_time_list = list()
@@ -683,69 +706,70 @@ def kakao_7(time_list):
     # for a in start_end_time_list:
     #     print(a)
     for [start_time, end_time] in start_end_time_list:
-        for [other_start_time, other_end_time] in start_end_time_list : 
+        for [other_start_time, other_end_time] in start_end_time_list:
 
             if (
                 (other_start_time <= start_time and start_time < other_end_time) or
-                (other_start_time <= start_time+1  and start_time+1 < other_end_time) or
+                (other_start_time <= start_time+1 and start_time+1 < other_end_time) or
 
-                (start_time <= other_end_time and other_end_time <start_time+1) or
-                (start_time <= other_start_time and other_start_time <start_time+1) 
-            ) :
+                (start_time <= other_end_time and other_end_time < start_time+1) or
+                (start_time <= other_start_time and other_start_time < start_time+1)
+            ):
                 #print("start_time" , start_time)
                 updated_value = 0
                 if dicts.get(start_time) == None:
                     updated_value = 1
-                else : 
+                else:
                     updated_value = dicts.get(start_time) + 1
                 dicts[start_time] = updated_value
-                
-            if  (
-                 
+
+            if (
+
                     (
                     (other_start_time <= end_time and end_time < other_end_time) or
                     (end_time <= other_start_time and other_end_time < end_time+1) or
                     (end_time <= other_end_time and other_end_time < end_time+1) or
-                    (end_time <= other_start_time and other_start_time < end_time+1) 
-                )) :
+                    (end_time <= other_start_time and other_start_time < end_time+1)
+                    )):
                 updated_value = 0
                 if dicts.get(end_time) == None:
                     updated_value = 1
-                else : 
+                else:
                     updated_value = dicts.get(end_time) + 1
                 dicts[end_time] = updated_value
 
         # while start_time <= end_time:
-            
+
             # updated_value = 0
             # if dicts.get(start_time) == None:
             #     updated_value = 1
             # else : hitomi_downloaded
             #     updated_value = dicts.get(start_time) + 1
             # dicts[start_time] = updated_value
-            # start_time +=1 
+            # start_time +=1
     dict_keys = dicts.keys()
     maximun_value = 0
-    for current_key in dict_keys : 
-        if (dicts.get(current_key) > maximun_value ):
+    for current_key in dict_keys:
+        if (dicts.get(current_key) > maximun_value):
             maximun_value = dicts.get(current_key)
     print(maximun_value)
     return dicts
 
-v = [ "2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s" ]
+
+v = ["2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s"]
 print(kakao_7(v))
-v = [ "2016-09-15 01:00:04.002 2.0s", "2016-09-15 01:00:07.000 2s" ]
+v = ["2016-09-15 01:00:04.002 2.0s", "2016-09-15 01:00:07.000 2s"]
 print(kakao_7(v))
-v= [ 
-    "2016-09-15 20:59:57.421 0.351s", 
-    "2016-09-15 20:59:58.233 1.181s", 
-    "2016-09-15 20:59:58.299 0.8s", 
-    "2016-09-15 20:59:58.688 1.041s", 
-    "2016-09-15 20:59:59.591 1.412s", 
-    "2016-09-15 21:00:00.464 1.466s", 
-    "2016-09-15 21:00:00.741 1.581s", 
-    "2016-09-15 21:00:00.748 2.31s", 
-    "2016-09-15 21:00:00.966 0.381s", 
-    "2016-09-15 21:00:02.066 2.62s" 
-    ]
+v = [
+    "2016-09-15 20:59:57.421 0.351s",
+    "2016-09-15 20:59:58.233 1.181s",
+    "2016-09-15 20:59:58.299 0.8s",
+    "2016-09-15 20:59:58.688 1.041s",
+    "2016-09-15 20:59:59.591 1.412s",
+    "2016-09-15 21:00:00.464 1.466s",
+    "2016-09-15 21:00:00.741 1.581s",
+    "2016-09-15 21:00:00.748 2.31s",
+    "2016-09-15 21:00:00.966 0.381s",
+    "2016-09-15 21:00:02.066 2.62s"
+]
 print(kakao_7(v))

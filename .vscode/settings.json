@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\jihwa\\Anaconda3\\envs\\tensorflow\\python.exe"
+    "python.pythonPath": "C:\\Users\\jihwa\\Anaconda3\\envs\\tensorflow\\python.exe",
+    "editor.tabSize": 2
 }
