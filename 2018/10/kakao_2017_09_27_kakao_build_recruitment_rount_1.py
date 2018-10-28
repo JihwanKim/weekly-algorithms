@@ -652,6 +652,7 @@ solution 함수에서는 로그 데이터 lines 배열에 대해 초당 최대 �
 출력: 7
 설명: 아래 타임라인 그림에서 빨간색으로 표시된 1초 각 구간의 처리량을 구해보면 (1)은 4개, (2)는 7개, (3)는 2개임을 알 수 있다. 따라서 초당 최대 처리량은 7이 되며, 동일한 최대 처리량을 갖는 1초 구간은 여러 개 존재할 수 있으므로 이 문제에서는 구간이 아닌 개수만 출력한다.
 """
+# 대략적인 해결방법은 최초 문제 푼시점으로부터 2시간도 안되서 잡았으나, 해결은 못함
 # 1 차 작성 결과, 예제 2번에서 원하던 값이 나오질 않음.
 import math
 
@@ -679,15 +680,17 @@ def kakao_7(time_list):
     for time in time_list:
         start_end_time_list.append(time_to_start_and_end_time(time))
     dicts = dict()
-    for a in start_end_time_list:
-        print(a)
+    # for a in start_end_time_list:
+    #     print(a)
     for [start_time, end_time] in start_end_time_list:
         for [other_start_time, other_end_time] in start_end_time_list : 
 
             if (
                 (other_start_time <= start_time and start_time < other_end_time) or
-                (start_time <= other_start_time and other_end_time < start_time+1) or
-                (other_start_time < start_time+1  and start_time+1 < other_end_time)
+                (other_start_time <= start_time+1  and start_time+1 < other_end_time) or
+
+                (start_time <= other_end_time and other_end_time <start_time+1) or
+                (start_time <= other_start_time and other_start_time <start_time+1) 
             ) :
                 #print("start_time" , start_time)
                 updated_value = 0
@@ -696,15 +699,14 @@ def kakao_7(time_list):
                 else : 
                     updated_value = dicts.get(start_time) + 1
                 dicts[start_time] = updated_value
-                # if end_time - start_time < 1 :
-                #     continue
                 
             if  (
                  
                     (
                     (other_start_time <= end_time and end_time < other_end_time) or
                     (end_time <= other_start_time and other_end_time < end_time+1) or
-                    (other_start_time < end_time+1  and end_time+1 < other_end_time)
+                    (end_time <= other_end_time and other_end_time < end_time+1) or
+                    (end_time <= other_start_time and other_start_time < end_time+1) 
                 )) :
                 updated_value = 0
                 if dicts.get(end_time) == None:
