@@ -33,6 +33,7 @@ def print_stats(stats, type):
         for (key,value) in items :
             msg += "\n" + str(key) + ":" + str(value)
         return "============"+ type + " 전적검색 결과============" + msg
+        
 
 
 @client.event
